@@ -1,6 +1,6 @@
 --[[ KillLedger — Turtle WoW / 1.12. English "You have slain …". No libraries. ]]
 
-local ADDON_NAME = "KillLedger"
+local ADDON_NAME = "twow-kill-ledger"
 local MAX_ROWS = 750
 local LIST_LINES = 14
 
@@ -424,6 +424,9 @@ miniBtn:SetScript("OnLeave", function()
 end)
 
 local function minimapButtonPlace()
+  if not db then
+    return
+  end
   local ang = db.mmAngle
   if not ang then
     ang = math.rad(215)
@@ -444,7 +447,7 @@ miniBtn:SetScript("OnDragStop", function()
   miniBtn.isMoving = false
 end)
 miniBtn:SetScript("OnUpdate", function()
-  if not miniBtn.isMoving then
+  if not miniBtn.isMoving or not db then
     return
   end
   local mx, my = GetCursorPosition()
