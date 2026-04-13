@@ -353,6 +353,11 @@ local function toggleMainFrame()
   end
 end
 
+_G.SLASH_KILLLEDGER1 = "/killledger"
+_G.SlashCmdList["KILLLEDGER"] = function()
+  toggleMainFrame()
+end
+
 local function addKill(kind, victim, victimLevel, zone, sub, mx, my, classTag)
   if not db or not db.kills or not victim or victim == "" then
     return
@@ -404,7 +409,7 @@ local function parseSlain(msg)
   addKill(kind, name, vl, z, s, mx, my, classTag)
 end
 
-local miniBtn = CreateFrame("Button", "KillLedgerMinimapButton", Minimap)
+local miniBtn = CreateFrame("Button", nil, Minimap)
 miniBtn:SetWidth(20)
 miniBtn:SetHeight(20)
 miniBtn:SetFrameStrata("MEDIUM")
@@ -485,8 +490,3 @@ eventFrame:SetScript("OnEvent", function()
     end
   end
 end)
-
-_G.SLASH_KILLLEDGER1 = "/killledger"
-_G.SlashCmdList["KILLLEDGER"] = function()
-  toggleMainFrame()
-end
