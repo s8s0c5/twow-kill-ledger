@@ -486,7 +486,7 @@ eventFrame:SetScript("OnEvent", function()
   end
 end)
 
-SLASH_KILLLEDGER1 = "/killledger"
-SlashCmdList["KILLLEDGER"] = function()
+_G.SLASH_KILLLEDGER1 = "/killledger"
+_G.SlashCmdList["KILLLEDGER"] = function()
   toggleMainFrame()
 end
