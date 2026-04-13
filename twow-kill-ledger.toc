@@ -1,6 +1,6 @@
 ## Interface: 11200
 ## Title: Kill Ledger
-## Notes: Install as Interface\AddOns\twow-kill-ledger\ (folder name must match this .toc). English combat text.
+## Notes: Interface\AddOns\twow-kill-ledger\ (folder = .toc name). /kl toggles. English combat text.
 ## Version: 1
 ## SavedVariablesPerCharacter: KillLedgerDB
 

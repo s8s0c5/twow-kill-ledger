@@ -171,7 +171,7 @@ local function makeMainFrame()
   local f = CreateFrame("Frame", "KillLedgerFrame", UIParent)
   f:SetWidth(420)
   f:SetHeight(460)
-  f:SetPoint("CENTER", 0, 0)
+  f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   f:SetMovable(true)
   f:EnableMouse(true)
   f:RegisterForDrag("LeftButton")
@@ -191,12 +191,17 @@ local function makeMainFrame()
   })
   f:SetBackdropColor(0, 0, 0, 0.85)
 
-  local left = f:CreateTexture(nil, "ARTWORK")
+  local bookAnchor = CreateFrame("Frame", nil, f)
+  bookAnchor:SetWidth(384)
+  bookAnchor:SetHeight(256)
+  bookAnchor:SetPoint("TOP", f, "TOP", 0, -8)
+
+  local left = bookAnchor:CreateTexture(nil, "ARTWORK")
   left:SetTexture("Interface\\QuestFrame\\UI-QuestLog-Book-Left")
   left:SetWidth(256)
   left:SetHeight(256)
-  left:SetPoint("TOPLEFT", 8, -8)
-  local right = f:CreateTexture(nil, "ARTWORK")
+  left:SetPoint("TOPLEFT", bookAnchor, "TOPLEFT", 0, 0)
+  local right = bookAnchor:CreateTexture(nil, "ARTWORK")
   right:SetTexture("Interface\\QuestFrame\\UI-QuestLog-Book-Right")
   right:SetWidth(128)
   right:SetHeight(256)
@@ -272,8 +277,8 @@ local function makeMainFrame()
   end)
 
   local listBg = CreateFrame("Frame", nil, f)
-  listBg:SetPoint("TOPLEFT", 20, -78)
-  listBg:SetPoint("BOTTOMRIGHT", f, "BOTTOMLEFT", 200, 48)
+  listBg:SetPoint("TOPLEFT", f, "TOPLEFT", 24, -78)
+  listBg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -24, 48)
 
   for line = 1, LIST_LINES do
     local rf = CreateFrame("Button", nil, listBg)
@@ -353,8 +358,8 @@ local function toggleMainFrame()
   end
 end
 
-_G.SLASH_KILLLEDGER1 = "/killledger"
-_G.SlashCmdList["KILLLEDGER"] = function()
+_G.SLASH_KL1 = "/kl"
+_G.SlashCmdList["KL"] = function()
   toggleMainFrame()
 end
 
@@ -412,7 +417,10 @@ end
 local miniBtn = CreateFrame("Button", nil, Minimap)
 miniBtn:SetWidth(20)
 miniBtn:SetHeight(20)
-miniBtn:SetFrameStrata("MEDIUM")
+miniBtn:SetFrameStrata("HIGH")
+if miniBtn.SetFrameLevel and Minimap.GetFrameLevel then
+  miniBtn:SetFrameLevel(Minimap:GetFrameLevel() + 3)
+end
 miniBtn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
 local miniIcon = miniBtn:CreateTexture(nil, "OVERLAY")
 miniIcon:SetTexture("Interface\\Icons\\INV_Misc_Book_09")
@@ -421,7 +429,7 @@ miniBtn:SetScript("OnClick", toggleMainFrame)
 miniBtn:SetScript("OnEnter", function()
   GameTooltip:SetOwner(miniBtn, "ANCHOR_LEFT")
   GameTooltip:SetText("Kill Ledger", 1, 1, 1)
-  GameTooltip:AddLine("Click to open your kill ledger.", nil, nil, nil, 1)
+  GameTooltip:AddLine("Click to open, or type /kl.", nil, nil, nil, 1)
   GameTooltip:Show()
 end)
 miniBtn:SetScript("OnLeave", function()
@@ -440,6 +448,7 @@ local function minimapButtonPlace()
   local y = 80 * math.sin(ang) - 52
   miniBtn:ClearAllPoints()
   miniBtn:SetPoint("CENTER", Minimap, "CENTER", x, y)
+  miniBtn:Show()
 end
 
 miniBtn:RegisterForDrag("RightButton")
@@ -466,6 +475,7 @@ end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ADDON_LOADED")
+eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 eventFrame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
@@ -477,6 +487,8 @@ eventFrame:SetScript("OnEvent", function()
     KillLedgerDB = KillLedgerDB or {}
     db = KillLedgerDB
     db.kills = db.kills or {}
+    minimapButtonPlace()
+  elseif event == "PLAYER_LOGIN" then
     minimapButtonPlace()
   elseif event == "PLAYER_TARGET_CHANGED" then
     rememberUnit("target")
