@@ -44,7 +44,7 @@ local function rememberUnit(unit)
 end
 
 local function trimKills()
-  while db.kills and #db.kills > MAX_ROWS do
+  while db.kills and getn(db.kills) > MAX_ROWS do
     tremove(db.kills, 1)
   end
 end
@@ -58,7 +58,7 @@ local function filteredCount()
     return 0
   end
   local c = 0
-  for i = 1, #db.kills do
+  for i = 1, getn(db.kills) do
     local k = db.kills[i].kind
     if (k == "PvE" and filterPve) or (k == "PvP" and filterPvp) then
       c = c + 1
@@ -72,7 +72,7 @@ local function nthFilteredNewest(n)
     return
   end
   local seen = 0
-  for i = #db.kills, 1, -1 do
+  for i = getn(db.kills), 1, -1 do
     local k = db.kills[i].kind
     if (k == "PvE" and filterPve) or (k == "PvP" and filterPvp) then
       seen = seen + 1
@@ -363,7 +363,7 @@ local function addKill(kind, victim, victimLevel, zone, sub, mx, my, classTag)
     return
   end
   local ts = time()
-  local n = #db.kills
+  local n = getn(db.kills)
   if n > 0 then
     local p = db.kills[n]
     if p.victim == victim and (ts - p.ts) <= 1 then
