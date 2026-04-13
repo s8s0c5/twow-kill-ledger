@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: Kill Ledger
+## Notes: Turtle WoW — PvE/PvP kill ledger (English client combat text).
+## Version: 1
+## SavedVariablesPerCharacter: KillLedgerDB
+
+KillLedger.lua
